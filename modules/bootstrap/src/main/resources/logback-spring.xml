@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="athena"/>
+  <springProperty scope="context" name="activeProfile" source="spring.profiles.active" defaultValue="default"/>
+
+  <appender name="JSON_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <includeMdcKeyName>traceId</includeMdcKeyName>
+      <includeMdcKeyName>spanId</includeMdcKeyName>
+      <includeMdcKeyName>traceFlags</includeMdcKeyName>
+      <customFields>{"app":"${appName}","profile":"${activeProfile}"}</customFields>
+      <fieldNames>
+        <timestamp>@timestamp</timestamp>
+        <message>message</message>
+        <logger>logger</logger>
+        <thread>thread</thread>
+        <level>level</level>
+        <levelValue>[ignore]</levelValue>
+      </fieldNames>
+      <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+        <maxDepthPerCause>20</maxDepthPerCause>
+        <shortenedClassNameLength>35</shortenedClassNameLength>
+        <rootCauseFirst>true</rootCauseFirst>
+      </throwableConverter>
+    </encoder>
+  </appender>
+
+  <!-- Plain text for local dev; override with JSON in prod via profile -->
+  <appender name="PLAIN_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level [%X{traceId:-},%X{spanId:-}] %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <springProfile name="local,default">
+    <root level="INFO">
+      <appender-ref ref="PLAIN_STDOUT"/>
+    </root>
+    <logger name="com.athena" level="DEBUG"/>
+  </springProfile>
+
+  <springProfile name="test">
+    <root level="WARN">
+      <appender-ref ref="PLAIN_STDOUT"/>
+    </root>
+    <logger name="com.athena" level="INFO"/>
+  </springProfile>
+
+  <springProfile name="prod,staging">
+    <root level="INFO">
+      <appender-ref ref="JSON_STDOUT"/>
+    </root>
+    <logger name="com.athena" level="INFO"/>
+  </springProfile>
+</configuration>

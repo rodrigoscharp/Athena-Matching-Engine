@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.athena</groupId>
+    <artifactId>athena-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>athena-bootstrap</artifactId>
+  <name>Athena :: Bootstrap</name>
+  <description>Spring Boot entry point. Wires all adapters and starts the application.</description>
+
+  <dependencies>
+    <!-- All adapters -->
+    <dependency>
+      <groupId>com.athena</groupId>
+      <artifactId>athena-adapter-rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.athena</groupId>
+      <artifactId>athena-adapter-grpc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.athena</groupId>
+      <artifactId>athena-adapter-ws</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.athena</groupId>
+      <artifactId>athena-adapter-persistence</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.athena</groupId>
+      <artifactId>athena-adapter-kafka</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.athena</groupId>
+      <artifactId>athena-adapter-redis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.athena</groupId>
+      <artifactId>athena-observability</artifactId>
+    </dependency>
+
+    <!-- Disruptor — single-writer event bus -->
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+    </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>com.athena.Application</mainClass>
+          <excludes>
+            <exclude>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

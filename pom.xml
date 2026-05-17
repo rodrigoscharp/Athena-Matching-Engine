@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.5</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.athena</groupId>
+  <artifactId>athena-parent</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Athena — Matching Engine</name>
+  <description>High-performance multi-asset order matching engine</description>
+
+  <modules>
+    <module>modules/domain</module>
+    <module>modules/application</module>
+    <module>modules/adapter-rest</module>
+    <module>modules/adapter-grpc</module>
+    <module>modules/adapter-ws</module>
+    <module>modules/adapter-persistence</module>
+    <module>modules/adapter-kafka</module>
+    <module>modules/adapter-redis</module>
+    <module>modules/observability</module>
+    <module>modules/bootstrap</module>
+    <module>modules/tests-architecture</module>
+  </modules>
+
+  <properties>
+    <!-- Java -->
+    <java.version>21</java.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- Framework -->
+    <spring-boot.version>3.3.5</spring-boot.version>
+    <springdoc-openapi.version>2.6.0</springdoc-openapi.version>
+
+    <!-- Concurrency -->
+    <disruptor.version>4.0.0</disruptor.version>
+    <agrona.version>1.22.1</agrona.version>
+    <caffeine.version>3.1.8</caffeine.version>
+
+    <!-- Persistence -->
+    <flyway.version>10.15.2</flyway.version>
+
+    <!-- Messaging / Schema -->
+    <confluent.version>7.6.0</confluent.version>
+    <avro.version>1.11.3</avro.version>
+
+    <!-- gRPC -->
+    <grpc.version>1.65.0</grpc.version>
+    <protobuf.version>3.25.3</protobuf.version>
+    <grpc-spring-boot-starter.version>3.1.0.RELEASE</grpc-spring-boot-starter.version>
+    <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
+    <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
+
+    <!-- Resilience -->
+    <resilience4j.version>2.2.0</resilience4j.version>
+    <bucket4j.version>8.10.1</bucket4j.version>
+
+    <!-- Observability (Micrometer + Tracing managed by Spring Boot 3.3.x) -->
+    <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
+
+    <!-- Testing -->
+    <testcontainers.version>1.20.1</testcontainers.version>
+    <jqwik.version>1.9.0</jqwik.version>
+    <pact-jvm.version>4.6.14</pact-jvm.version>
+    <awaitility.version>4.2.1</awaitility.version>
+    <archunit.version>1.3.0</archunit.version>
+    <jmh.version>1.37</jmh.version>
+    <gatling.version>3.11.0</gatling.version>
+
+    <!-- Quality -->
+    <spotless.version>2.43.0</spotless.version>
+    <google-java-format.version>1.25.2</google-java-format.version>
+    <checkstyle-plugin.version>3.4.0</checkstyle-plugin.version>
+    <checkstyle.version>10.17.0</checkstyle.version>
+    <spotbugs-plugin.version>4.8.6.4</spotbugs-plugin.version>
+    <owasp-dependency-check.version>10.0.3</owasp-dependency-check.version>
+    <jacoco.version>0.8.12</jacoco.version>
+    <pitest.version>1.16.1</pitest.version>
+    <pitest-junit5-plugin.version>1.2.1</pitest-junit5-plugin.version>
+
+    <!-- Build -->
+    <jib.version>3.4.3</jib.version>
+    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>3.3.1</maven-failsafe-plugin.version>
+
+    <!-- JaCoCo thresholds -->
+    <jacoco.line.minimum>0.90</jacoco.line.minimum>
+    <jacoco.branch.minimum>0.80</jacoco.branch.minimum>
+    <jacoco.method.minimum>0.60</jacoco.method.minimum>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Internal modules -->
+      <dependency>
+        <groupId>com.athena</groupId>
+        <artifactId>athena-domain</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.athena</groupId>
+        <artifactId>athena-application</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.athena</groupId>
+        <artifactId>athena-adapter-rest</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.athena</groupId>
+        <artifactId>athena-adapter-grpc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.athena</groupId>
+        <artifactId>athena-adapter-ws</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.athena</groupId>
+        <artifactId>athena-adapter-persistence</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.athena</groupId>
+        <artifactId>athena-adapter-kafka</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.athena</groupId>
+        <artifactId>athena-adapter-redis</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.athena</groupId>
+        <artifactId>athena-observability</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- gRPC BOM -->
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-bom</artifactId>
+        <version>${grpc.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Testcontainers BOM -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Resilience4j BOM -->
+      <dependency>
+        <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-bom</artifactId>
+        <version>${resilience4j.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- gRPC Spring Boot Starter -->
+      <dependency>
+        <groupId>net.devh</groupId>
+        <artifactId>grpc-spring-boot-starter</artifactId>
+        <version>${grpc-spring-boot-starter.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.devh</groupId>
+        <artifactId>grpc-server-spring-boot-starter</artifactId>
+        <version>${grpc-spring-boot-starter.version}</version>
+      </dependency>
+
+      <!-- Disruptor -->
+      <dependency>
+        <groupId>com.lmax</groupId>
+        <artifactId>disruptor</artifactId>
+        <version>${disruptor.version}</version>
+      </dependency>
+
+      <!-- Agrona -->
+      <dependency>
+        <groupId>org.agrona</groupId>
+        <artifactId>agrona</artifactId>
+        <version>${agrona.version}</version>
+      </dependency>
+
+      <!-- Caffeine -->
+      <dependency>
+        <groupId>com.github.ben-manes.caffeine</groupId>
+        <artifactId>caffeine</artifactId>
+        <version>${caffeine.version}</version>
+      </dependency>
+
+      <!-- Avro -->
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+
+      <!-- Confluent -->
+      <dependency>
+        <groupId>io.confluent</groupId>
+        <artifactId>kafka-avro-serializer</artifactId>
+        <version>${confluent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.confluent</groupId>
+        <artifactId>kafka-schema-registry-client</artifactId>
+        <version>${confluent.version}</version>
+      </dependency>
+
+      <!-- springdoc -->
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>${springdoc-openapi.version}</version>
+      </dependency>
+
+      <!-- Bucket4j -->
+      <dependency>
+        <groupId>com.bucket4j</groupId>
+        <artifactId>bucket4j-core</artifactId>
+        <version>${bucket4j.version}</version>
+      </dependency>
+
+      <!-- Logstash encoder -->
+      <dependency>
+        <groupId>net.logstash.logback</groupId>
+        <artifactId>logstash-logback-encoder</artifactId>
+        <version>${logstash-logback-encoder.version}</version>
+      </dependency>
+
+      <!-- ArchUnit -->
+      <dependency>
+        <groupId>com.tngtech.archunit</groupId>
+        <artifactId>archunit-junit5</artifactId>
+        <version>${archunit.version}</version>
+      </dependency>
+
+      <!-- jqwik -->
+      <dependency>
+        <groupId>net.jqwik</groupId>
+        <artifactId>jqwik</artifactId>
+        <version>${jqwik.version}</version>
+      </dependency>
+
+      <!-- Awaitility -->
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>${awaitility.version}</version>
+      </dependency>
+
+      <!-- Pact -->
+      <dependency>
+        <groupId>au.com.dius.pact.consumer</groupId>
+        <artifactId>junit5</artifactId>
+        <version>${pact-jvm.version}</version>
+      </dependency>
+
+      <!-- JMH -->
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-core</artifactId>
+        <version>${jmh.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-generator-annprocess</artifactId>
+        <version>${jmh.version}</version>
+      </dependency>
+
+      <!-- protobuf -->
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${protobuf.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <release>21</release>
+            <compilerArgs>
+              <arg>-parameters</arg>
+              <arg>-Xlint:all</arg>
+              <arg>-Xlint:-processing</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+          <configuration>
+            <argLine>@{argLine} -XX:+EnableDynamicAgentLoading</argLine>
+            <excludes>
+              <exclude>**/*IT.java</exclude>
+              <exclude>**/*IntegrationTest.java</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven-failsafe-plugin.version}</version>
+          <configuration>
+            <argLine>@{argLine} -XX:+EnableDynamicAgentLoading</argLine>
+            <includes>
+              <include>**/*IT.java</include>
+              <include>**/*IntegrationTest.java</include>
+            </includes>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
+          <executions>
+            <execution>
+              <id>prepare-agent</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>prepare-agent-integration</id>
+              <goals>
+                <goal>prepare-agent-integration</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>report</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>check</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <rule>
+                    <element>BUNDLE</element>
+                    <limits>
+                      <limit>
+                        <counter>LINE</counter>
+                        <value>COVEREDRATIO</value>
+                        <minimum>${jacoco.line.minimum}</minimum>
+                      </limit>
+                      <limit>
+                        <counter>BRANCH</counter>
+                        <value>COVEREDRATIO</value>
+                        <minimum>${jacoco.branch.minimum}</minimum>
+                      </limit>
+                      <limit>
+                        <counter>METHOD</counter>
+                        <value>COVEREDRATIO</value>
+                        <minimum>${jacoco.method.minimum}</minimum>
+                      </limit>
+                    </limits>
+                    <excludes>
+                      <!-- Skip coverage check on empty modules -->
+                      <exclude>com.athena.Application</exclude>
+                    </excludes>
+                  </rule>
+                </rules>
+                <!-- Only enforce when there are classes to measure -->
+                <haltOnFailure>false</haltOnFailure>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>${spotless.version}</version>
+          <configuration>
+            <java>
+              <googleJavaFormat>
+                <version>${google-java-format.version}</version>
+                <style>GOOGLE</style>
+                <reflowLongStrings>true</reflowLongStrings>
+              </googleJavaFormat>
+              <removeUnusedImports/>
+              <trimTrailingWhitespace/>
+              <endWithNewline/>
+            </java>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <phase>verify</phase>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>${pitest.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.pitest</groupId>
+              <artifactId>pitest-junit5-plugin</artifactId>
+              <version>${pitest-junit5-plugin.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <targetClasses>
+              <param>com.athena.trading.domain.*</param>
+              <param>com.athena.trading.application.*</param>
+              <param>com.athena.marketdata.domain.*</param>
+              <param>com.athena.marketdata.application.*</param>
+              <param>com.athena.account.domain.*</param>
+              <param>com.athena.account.application.*</param>
+            </targetClasses>
+            <mutationThreshold>75</mutationThreshold>
+            <outputFormats>
+              <outputFormat>HTML</outputFormat>
+              <outputFormat>XML</outputFormat>
+            </outputFormats>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>com.google.cloud.tools</groupId>
+          <artifactId>jib-maven-plugin</artifactId>
+          <version>${jib.version}</version>
+          <configuration>
+            <from>
+              <image>eclipse-temurin:21-jre-alpine</image>
+            </from>
+            <to>
+              <image>athena-matching-engine</image>
+              <tags>
+                <tag>latest</tag>
+                <tag>${project.version}</tag>
+              </tags>
+            </to>
+            <container>
+              <ports>
+                <port>8080</port>
+                <port>9090</port>
+              </ports>
+              <jvmFlags>
+                <jvmFlag>-XX:+UseZGC</jvmFlag>
+                <jvmFlag>-XX:+ZGenerational</jvmFlag>
+                <jvmFlag>-Dfile.encoding=UTF-8</jvmFlag>
+              </jvmFlags>
+            </container>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${checkstyle-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyle.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${spotbugs-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!--
+      google-java-format uses internal javac APIs (getDiagnostics) that were removed in JDK 24.
+      Skip Spotless check automatically when building with JDK 22+; CI enforces formatting with JDK 21.
+      This profile is intentional — it does NOT indicate that formatting is optional.
+    -->
+    <profile>
+      <id>skip-spotless-jdk22plus</id>
+      <activation>
+        <jdk>[22,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.diffplug.spotless</groupId>
+            <artifactId>spotless-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <repositories>
+    <repository>
+      <id>confluent</id>
+      <name>Confluent</name>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>confluent</id>
+      <url>https://packages.confluent.io/maven/</url>
+    </pluginRepository>
+  </pluginRepositories>
+</project>

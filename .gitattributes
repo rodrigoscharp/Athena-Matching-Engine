@@ -1,0 +1,20 @@
+# Normalize line endings on checkout
+* text=auto eol=lf
+
+# Force shell scripts to always use LF
+*.sh   text eol=lf
+mvnw   text eol=lf
+
+# Force Windows scripts to use CRLF
+*.cmd  text eol=crlf
+*.bat  text eol=crlf
+
+# Binary files — never diff
+*.jar  binary
+*.class binary
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.ico  binary
+*.zip  binary
+*.gz   binary

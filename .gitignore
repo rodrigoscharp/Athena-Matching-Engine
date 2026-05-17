@@ -1,0 +1,56 @@
+# ── Maven ─────────────────────────────────────────────────────────────────────
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+.vscode/
+*.code-workspace
+*.DS_Store
+
+# ── Secrets / Environment ──────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+Thumbs.db
+.Thumbs.db
+.DS_Store
+._*
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+# keep docker-compose.yml, ignore local overrides
+docker-compose.override.yml
+docker-compose.local.yml
+
+# ── JaCoCo ────────────────────────────────────────────────────────────────────
+**/jacoco.exec
+**/jacoco-merged.exec
+
+# ── Gatling ───────────────────────────────────────────────────────────────────
+**/gatling-results/
+
+# ── JMH ───────────────────────────────────────────────────────────────────────
+benchmarks.jar
+
+# ── OTel agent ────────────────────────────────────────────────────────────────
+opentelemetry-javaagent*.jar
+
+# ── Pitest ────────────────────────────────────────────────────────────────────
+**/pit-reports/
+
+# ── Checkstyle ────────────────────────────────────────────────────────────────
+checkstyle-result.xml

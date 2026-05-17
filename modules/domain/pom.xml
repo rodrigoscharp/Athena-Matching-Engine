@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.athena</groupId>
+    <artifactId>athena-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>athena-domain</artifactId>
+  <name>Athena :: Domain</name>
+  <description>Pure domain model — zero framework dependencies. Only java.* allowed.</description>
+
+  <!--
+    IMPORTANT: This module MUST remain framework-free.
+    Allowed: java.*, junit, jqwik.
+    Forbidden: Spring, Lombok, JPA, Hibernate, Jackson, Kafka, any framework.
+    ArchUnit enforces this at build time.
+  -->
+  <dependencies>
+    <!-- Test only -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.jqwik</groupId>
+      <artifactId>jqwik</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <properties>
+            <configurationParameters>
+              jqwik.reporting.usejunitplatform=true
+            </configurationParameters>
+          </properties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <rules>
+            <rule>
+              <element>BUNDLE</element>
+              <limits>
+                <limit>
+                  <counter>LINE</counter>
+                  <value>COVEREDRATIO</value>
+                  <minimum>${jacoco.line.minimum}</minimum>
+                </limit>
+                <limit>
+                  <counter>BRANCH</counter>
+                  <value>COVEREDRATIO</value>
+                  <minimum>${jacoco.branch.minimum}</minimum>
+                </limit>
+                <limit>
+                  <counter>METHOD</counter>
+                  <value>COVEREDRATIO</value>
+                  <minimum>${jacoco.method.minimum}</minimum>
+                </limit>
+              </limits>
+            </rule>
+          </rules>
+          <haltOnFailure>false</haltOnFailure>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
